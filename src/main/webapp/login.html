@@ -54,12 +54,12 @@
     </div>
 </body>
 
-<script src="/content/ui/global/jQuery/jquery.min.js"></script>
-<script src="/content/plugins/validator/validator.js"></script>
-<script src="/content/supermgr/Base/js/common.js"></script>
-<script src="/scripts/ajax.js"></script>
-<script src="/scripts/md5.js"></script>
-<script src="/scripts/contants.js"></script>
+<script src="content/ui/global/jQuery/jquery.min.js"></script>
+<script src="content/plugins/validator/validator.js"></script>
+<script src="content/supermgr/Base/js/common.js"></script>
+<script src="scripts/ajax.js"></script>
+<script src="scripts/md5.js"></script>
+<script src="scripts/contants.js"></script>
 <script type="text/javascript">
 	$(function(){
 		$("input[name=username]").focus();
@@ -87,7 +87,7 @@
    			var url = "sys/login.do";
    			handleAjaxSimple(url, JSON.stringify(jsonData), 1, function(data){
    				if (data.code == 0){
-   		    		window.location.href = "/admin/index_iframe.html?name="+$("#username").val();
+   		    		window.location.href = "admin/index_iframe.html?name="+$("#username").val();
                     SetCookie("username",username,7);
    		    	}else{
    		    		$("#login-error").html(data.restr)

@@ -4,6 +4,8 @@ package com.wanghao.controller;/**
 
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -182,13 +184,13 @@ public class WriteExcel {
      * @return
      * @throws IOException
      */
-    public static Workbook getWorkbok(File file) throws IOException {
+    public static Workbook getWorkbok(File file) throws IOException, InvalidFormatException {
         Workbook wb = null;
         FileInputStream in = new FileInputStream(file);
         if(file.getName().endsWith(EXCEL_XLS)){  //Excel 2003  
             wb = new HSSFWorkbook(in);
         }else if(file.getName().endsWith(EXCEL_XLSX)){  // Excel 2007/2010  
-            wb = new XSSFWorkbook(in);
+            wb = new XSSFWorkbook(OPCPackage.open(in));
         }
         return wb;
     }

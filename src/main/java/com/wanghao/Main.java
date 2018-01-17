@@ -1,6 +1,8 @@
 package com.wanghao;
 
-import java.math.BigDecimal;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Properties;
 
 /** 
 * @author WH 作者 E-mail: 
@@ -10,16 +12,27 @@ import java.math.BigDecimal;
 public class Main {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-     /*   BigDecimal sum1= new BigDecimal(1.13658);
-        sum1=sum1.setScale(2,BigDecimal.ROUND_HALF_UP);
-        System.out.println(sum1.toString());*/
-        
-        
-        
-        String a="123123";
-        System.out.println(a.length());
-        
+        Properties prop = new Properties();
+        try{
+            //读取属性文件a.properties
+            InputStream in = Main.class.getClassLoader().getResourceAsStream("name.properties");//new BufferedInputStream(new FileInputStream("classpath:name.properties"));
+            prop.load(in);     ///加载属性列表
+            Iterator<String> it=prop.stringPropertyNames().iterator();
+            while(it.hasNext()){
+                String key=it.next();
+                System.out.println(key+":"+prop.getProperty(key));
+            }
+            in.close();
+
+           /* ///保存属性到b.properties文件
+            FileOutputStream oFile = new FileOutputStream("b.properties", true);//true表示追加打开
+            prop.setProperty("phone", "10086");
+            prop.store(oFile, "The New properties file");
+            oFile.close();*/
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
 
 }

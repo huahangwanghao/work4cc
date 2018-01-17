@@ -33,80 +33,13 @@
 
     <section class="content-header">
         <h1>
-            文件转换工具<small>欢迎<span id="my"></span></small>
-            <small><a class="btn red btn-outline" href="https://github.com/blueimp/jQuery-File-Upload" target="_blank">官方文档</a></small>
+            文件转换工具点击这里<a href="#" onclick="doTrun();">开始跳转转换页面</a>
         </h1>
        
     </section>
     <!-- Main content -->
 <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-danger">
-                <div class="box-header">
-                    <h3 class="box-title"></h3>
-                </div>
-                <div class="box-body">
-                    <h3></h3>
-                   
-                    <p>
-                        <a class="btn red btn-outline" href="https://github.com/blueimp/jQuery-File-Upload" target="_blank">官方文档</a>
-                    </p>
-                </div>
-            </div>
-          
-            <form id="uploadForm" action="/sys/fileUpload2.do" method="POST" enctype="multipart/form-data">
-                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-                <div class="row fileupload-buttonbar">
-                    <div class="col-lg-7">
-                        <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span style="display: none" class="btn btn-success fileinput-button">
-                            <i class="fa fa-plus"></i>
-                            <span> 添加文件... </span>
-                            
-                        </span>
-                        <input  type="hidden" name="userName" value="" id="userName" />
-                        <input type="file" name="file" multiple="">
-                       <!-- <button type="button" disabled class="btn btn-blue start">
-                            <i class="fa fa-upload"></i>
-                            <span> 开始上传 </span>
-                        </button>-->
-                        <button type="button" onclick="doUpload()">
-                            <i class="fa fa-ban-circle"></i>
-                            <span>  开始上传 </span>
-                        </button>
-                        <button type="button" onclick="getDown()" class="btn btn-primary delete">
-                            <i class="fa fa-trash"></i>
-                            <span> 下载 </span>
-                        </button>
-                        
-                        <!-- The global file processing state -->
-                        <span class="fileupload-process"> </span>
-                    </div>
-                    <!-- The global progress information -->
-                    <div class="col-lg-5 fileupload-progress fade">
-                        <!-- The global progress bar -->
-                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar progress-bar-success" style="width: 0%;"> </div>
-                        </div>
-                        <!-- The extended global progress information -->
-                        <div class="progress-extended"> &nbsp; </div>
-                    </div>
-                </div>
-                <!-- The table listing the files available for upload/download -->
-                <table role="presentation" class="table table-striped clearfix">
-                    <tbody class="files"> </tbody>
-                </table>
-            </form>
-            <div class="box box-success">
-                <div class="box-header">
-                    <h3 class="box-title"></h3>
-                </div>
-                <div class="box-body">
-                    
-                </div>
-            </div>
-        </div>
+    
     </div>
     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
         <div class="slides"> </div>
@@ -262,53 +195,9 @@
                 .call(this, $.Event('done'), { result: result });
         });
     });
-    
-    function getDown(){
-        window.location.href=BASE_URL+"/sys/download.do?fileName=1.xlsx&userName="+ReadCookie("username");
-    }
-/*    
-    function doUpload(){
-        $.ajax({
-            url : "/sys/fileUpload2.do",
-            type : "POST",
-            data : $( '#postForm').serialize(),
-            success : function(data) {
-               alert(data);
-            },
-            error : function(data) {
-                $( '#serverResponse').html(data.status + " : " + data.statusText + " : " + data.responseText);
-            }
-        });
-    }*/
-
-    function doUpload() {
-        var formData = new FormData($( "#uploadForm" )[0]);
-        $.ajax({
-            url: BASE_URL+"/sys/fileUpload2.do",
-            type: 'POST',
-            data: formData,
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (returndata) {
-                alert(returndata.restr);
-            },
-            error: function (returndata) {
-                alert(returndata.code);
-            }
-        });
-    }
-
-    function ReadCookie(cookieName) {
-        var theCookie = "" + document.cookie;
-        var ind = theCookie.indexOf(cookieName);
-        if(ind==-1 || cookieName=="") return "";
-        var ind1 = theCookie.indexOf(';',ind);
-        if(ind1==-1) ind1 = theCookie.length;
-        /*读取Cookie值*/
-        return unescape(theCookie.substring(ind+cookieName.length+1,ind1));
-    }
+  function doTrun() {
+      window.location.href=BASE_URL+"/component-extend/formfileupload.html";
+  }
 
 </script>
 

@@ -1,5 +1,8 @@
 package com.wanghao.controller;
 
+import com.wanghao.utils.PropertyUtil;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -12,11 +15,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,10 +49,17 @@ public class WorkController {
 	public Object login(@RequestBody SysUser req, HttpServletRequest request) {
 		Map<String, Object> map = this.getMap("success");
 		
+		String userName=req.getLoginid();
+		String pwd=req.getPwd();
+		String pwd1=PropertyUtil.getPwd(userName);
+		
+		
 		boolean loginsuccess = false;
 		logger.info("登录入参:"+req);
-		if("admin".equals(req.getLoginid())&&"43bf66bccf471ea8bf9a3efaf1419438".equals(req.getPwd())){
-			request.getSession().setAttribute(req.getLoginid(),req.getLoginid());
+		if(null!=pwd1){
+			HttpSession session=request.getSession();
+			session.setMaxInactiveInterval(60*5);
+			session.setAttribute(req.getLoginid(),req.getLoginid());
 			loginsuccess=true;
 		}
 		
@@ -107,7 +119,7 @@ public class WorkController {
 	@ResponseBody
 	public Map<String, Object>  fileUpload2(HttpServletRequest request,@RequestParam("userName")String userName,@RequestParam("file") CommonsMultipartFile file) throws Exception {
 		
-		
+		logger.info("上传文件入参:"+userName);
 		String osName=System.getProperty("os.name");
 		osName=osName.toUpperCase();
 		
@@ -115,7 +127,7 @@ public class WorkController {
 			return getMap("请先登录!");
 		}
 		if(request.getSession().getAttribute(userName)==null){
-			return getMap("请先登录!");
+			return getMap("session 过期,请重新登录!");
 		}
 		
 		if(file==null){
@@ -129,7 +141,7 @@ public class WorkController {
 		long  startTime=System.currentTimeMillis();
 		System.out.println("fileName："+file.getOriginalFilename());
 		String path="D:/"+new Date().getTime()+file.getOriginalFilename();
-		String writePath="D://1.xlsx";
+		String writePath="D://admin//1.xlsx";
 		
 		if(osName.contains("WIN")){
 			//path="D:/"+new Date().getTime()+file.getOriginalFilename();
@@ -137,6 +149,7 @@ public class WorkController {
 			path="/tmp/"+new Date().getTime()+file.getOriginalFilename();
 			writePath="/tmp/"+userName+"/1.xlsx";
 		}
+		logger.info("编写的位置:"+writePath);
 		createFile(writePath);
 		File newFile=new File(path);
 		//通过CommonsMultipartFile的方法直接写文件（注意这个时候）
@@ -160,7 +173,7 @@ public class WorkController {
 			if(line2!=null&&line2.contains("客户姓名 ")){
 				continue;
 			}
-			System.out.println(line2);
+			//System.out.println(line2);
 			if(line2!=null)
 				list.add(getStudetInfo(line2));
 		}
@@ -374,15 +387,30 @@ public class WorkController {
 
 	
 	
-	private  void createFile(String path){
+	private  void createFile(String path){ 
 		File file = new File(path);
 		if(!file.exists()){
 			try {
+				File f=file.getParentFile();
+				f.mkdir();
 				file.createNewFile();
-			} catch (IOException e) {
+				try {
+					testCreateFirstExcel07(path);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
+
+	public static void testCreateFirstExcel07(String path) throws Exception {
+		Workbook wb = new XSSFWorkbook();
+		FileOutputStream fileOut = new FileOutputStream(path);
+		wb.write(fileOut);
+		fileOut.close();
+	}
+
 }

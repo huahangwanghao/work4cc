@@ -495,6 +495,7 @@ immediately after the control sidebar -->
     <!-- Bootstrap 3.3.6 -->
 <script src="../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
     <script src="../content/min/js/supershopui.common.js"></script>
+<script src="../common.js"></script>
 
 
 <script type="text/javascript">
@@ -513,9 +514,17 @@ immediately after the control sidebar -->
         /*读取Cookie值*/
         return unescape(theCookie.substring(ind+cookieName.length+1,ind1));
     }
-    
+/*    function getRoot() {
+        var hostname = location.hostname;
+        var pathname = location.pathname;
+        var contextPath = pathname.split("/")[1];
+        var port = location.port;
+        var protocol = location.protocol;
+        return "/" + contextPath;
+    }
+    var BASE_URL = getRoot();*/
     $(function() {
-        addTabs(({ id: '10008', title: '欢迎页', close: false, url: '../component-extend/formfileupload.html' }));
+        addTabs(({ id: '10008', title: '欢迎页', close: false, url: BASE_URL+'/component-extend/formfileupload1.html' ,targetType: "blank"}));
         App.fixIframeCotent();
         var menus = [
              { id: "10010", text: "我的工作台", isHeader: true },
