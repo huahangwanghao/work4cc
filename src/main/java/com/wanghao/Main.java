@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
@@ -25,7 +26,12 @@ public class Main {
         wb.write(fileOut);
         fileOut.close();
 */String title[] = {"id1","name1","password"};
-        Main.createExcel("E:/test2.xls","sheet1");
+        //Main.createExcel("E:/test2.xlsx","sheet1");
+        XSSFWorkbook hwb = new XSSFWorkbook();
+        OutputStream out = new FileOutputStream("E://user.xlsx");
+        XSSFSheet sheet = hwb.createSheet();
+        hwb.write(out);
+        out.close();
     }
 
     public static boolean fileExist(String fileDir){

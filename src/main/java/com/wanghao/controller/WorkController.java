@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,13 +145,13 @@ public class WorkController {
 		long  startTime=System.currentTimeMillis();
 		System.out.println("fileName："+file.getOriginalFilename());
 		String path="D:/"+new Date().getTime()+file.getOriginalFilename();
-		String writePath="D://admin//1.xls";
+		String writePath="D://admin//1.xlsx";
 		
 		if(osName.contains("WIN")){
 			//path="D:/"+new Date().getTime()+file.getOriginalFilename();
 		}else{
 			path="/tmp/"+new Date().getTime()+file.getOriginalFilename();
-			writePath="/tmp/"+userName+"/1.xls";
+			writePath="/tmp/"+userName+"/1.xlsx";
 		}
 		logger.info("编写的位置:"+writePath);
 		createFile(writePath);
@@ -416,7 +417,12 @@ public class WorkController {
 		wb.createSheet();
 		fileOut.close();*/
 
-		createExcel(wb,path,"sheet1");
+		//createExcel(wb,path,"sheet1");
+		XSSFWorkbook hwb = new XSSFWorkbook();
+		OutputStream out = new FileOutputStream(path);
+		XSSFSheet sheet = hwb.createSheet();
+		hwb.write(out);
+		out.close();
 	}
 
 	public static void createExcel(HSSFWorkbook workbook,String fileDir,String sheetName) throws Exception{
