@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html>
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+	<meta charset="utf-8" />
+	<title>商品管理</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<!-- Bootstrap 3.3.6 -->
+	<link rel="stylesheet" href="../../content/ui/global/bootstrap/css/bootstrap.min.css">
+	<!-- Font Awesome -->
+	<link href="../../content/ui/global/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<!-- Theme style -->
+	<link rel="stylesheet" href="../../content/adminlte/dist/css/AdminLTE.css">
+	<link rel="stylesheet" href="../../content/adminlte/dist/css/skins/_all-skins.min.css">
+	<link href="../../content/min/css/supershopui.common.min.css" rel="stylesheet" />
+	<link href="../../content/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet" />
+	<link href="../../plugin/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" />
+	<link href="../../plugin/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" />
+</head>
+<body>
+<section class="content-header">
+	<h1>订单管理</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<!-- BEGIN SAMPLE TABLE PORTLET-->
+		<div class="col-md-12">
+			<!-- BEGIN SAMPLE TABLE PORTLET-->
+			<div class="box-body" style="padding-bottom:0px;">
+				<div class="panel panel-default">
+					<div class="panel-heading">查询条件</div>
+					<div class="panel-body">
+						<form id="form_search" class="form-horizontal">
+							<div class="form-group">
+								<label class="control-label col-sm-1" for="customerName">客户名称</label>
+								<div class="col-sm-3">
+									<input type="text" class="form-control" name="customerName" id="customerName">
+								</div>
+								<label class="control-label col-sm-1" for="goodSpeci">订单编号</label>
+								<div class="col-sm-3">
+									<input type="text" class="form-control" name="orderId" id="goodSpeci">
+								</div>
+								<label class="control-label col-sm-1" for="goodStatus">发货状态</label>
+								<div class="col-sm-2">
+									<select class="form-control" id="goodStatus" name="goodStatus">
+										<option value="">--请选择--</option>
+										<option value="0">未发货</option>
+										<option value="1">发货中</option>
+										<option value="2">已完成</option>
+										<option value="3">已退货</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-1">下单时间</label>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<input id="good_startdate" name="startDate" type="text" class="form-control"
+											   onClick="WdatePicker({maxDate:'#F{$dp.$D(\'good_enddate\')||\'%y-%M-%d\'}',dateFmt:'yyyy-MM-dd'});" />
+										<span class="input-group-addon">至</span>
+										<input id="good_enddate" name="endDate" type="text" class="form-control"
+											   onClick="WdatePicker({minDate:'#F{$dp.$D(\'good_startdate\')}',dateFmt:'yyyy-MM-dd'});" />
+									</div>
+								</div>
+								<div class="col-sm-4" style="text-align:left;">
+									<button type="button" style="margin-left:50px" id="btn_search"
+											class="btn btn-primary">查询</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div id="toolbar" class="btn-group">
+					<button style="display: none" id="btn_add" type="button" class="btn btn-default" onclick="goGoodAdd();">
+						<span class="glyphicon glyphicon-plus create" aria-hidden="true"></span>新增
+					</button>
+					<button id="btn_delete" type="button" class="btn btn-default" onclick="deleteGood();">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>批量删除
+					</button>
+				</div>
+				<div class="table-scrollable">
+					<table class="table-striped table-hover" id="datatable">
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script src="../../content/ui/global/jQuery/jquery.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../content/min/js/supershopui.common.js"></script>
+<script src="../../content/supermgr/Base/js/common.js"></script>
+<script src="../../plugin/bootstrap-editable/js/edittable.min.js"></script>
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>-->
+<script src="../../content/plugins/bootstrap-table/bootstrap-table.js"></script>
+<script src="../../content/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+<script src="../../scripts/ajax.js"></script>
+<script src="../../scripts/tableutil.js"></script>
+<script src="../../plugin/My97DatePicker/WdatePicker.js"></script>
+<script src="../../plugin/bootstrap-editable/js/bootstarp-table-edit.js"></script>
+</body>
+<script>
+	//http://www.cnblogs.com/landeanfen/p/5821192.html#_label2_0
+    function initTable(){
+        //先销毁表格
+        $('#datatable').bootstrapTable('destroy');
+        $("#datatable").bootstrapTable({
+            url: "/cms/buy/getOrderList4Cms.do",
+            dataType: "json",
+            singleSelect: false,
+            clickToSelect: true,
+            striped: true,	//是否显示行间隔色
+            cache: false,	//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            sortable: true,	//是否启用排序 
+            pagination: true,	//显示分页按钮
+            idField:"customerGoodId",	//设置主键
+            sortName:"category_id",
+            sortOrder:"asc",	//默认排序
+            pageNumber: 1,	//初始化加载第一页，默认第一页
+            pageSize: 10,	//默认显示的每页个数
+            pageList: [10, 25, 50, 100],	//可供选择的每页的行数（*）
+            queryParamsType: '',	//默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+            queryParams:function(params){
+                var temp = {
+                    pageSize: params.pageSize,   //页面大小
+                    pageNumber: params.pageNumber,  //页码
+                    sortName: params.sortName,  //排序列
+                    sortOrder: params.sortOrder,    //排序方式
+                    paramJson: JSON.stringify(getQuetyData()),  //查询数据
+                }
+                return temp;
+            },
+            responseHandler:function(res){
+                //动态渲染表格之前获取有后台传递的数据时,用于获取出除去本身渲染所需的数据的额外参数
+                //详见此函数参数的api
+                return {
+                    "total": res.data.total,//总页数
+                    "rows": res.data.rows   //数据
+                };
+            },
+            //search: true, 显示搜索框（客户端搜索）
+            sidePagination: "server", //服务端处理分页
+            //showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+            //cardView: false,                    //是否显示详细视图
+            detailView: false,                   //是否显示父子表
+            columns: [{
+                field: 'checkAll',
+                title: '全选',
+                align : 'center',
+                valign : 'middle',
+                checkbox : true,
+                width : 10
+            },{
+                field : 'orderId',
+                title : '订单Id',
+                align : 'center',
+                width :  60,
+                valign : 'middle'
+            },
+                {
+                    field : 'customerGoodId',
+                    title : '商品Id',
+					hidden:	"hidden",
+                    align : 'center',
+                    width :  60,
+                    valign : 'middle'
+                },{
+                field : 'customerName',
+                title : '客户姓名',
+                align : 'center',
+                width :  40,
+                valign : 'middle'
+            },{
+                    field : 'customerPhone',
+                    title : '客户手机',
+                    align : 'center',
+                    width :  50,
+                    valign : 'middle'
+                },
+                {
+                    field : 'goodName',
+                    title : '商品名称',
+                    align : 'center',
+                    width :  80,
+                    valign : 'middle'
+                },
+                {
+                    field : 'customerAddress',
+                    title : '收获地址',
+                    align : 'center',
+                    width :  180,
+                    valign : 'middle'
+                },
+                {
+                    field : 'expressId',
+                    title : '快递单号',
+                    editable: {
+                        type: 'text',
+                        title: '订单号',
+                        validate: function (v) {
+                            if (!v) return '订单号不能为空';
+                        }
+                    },
+                    align : 'center',
+                    width :  50,
+                    valign : 'middle',
+                    formatter : function(value,row,index) {
+                        var day=row.expressId;
+                        if(typeof(day)=="undefined"){
+
+                            return "";
+
+                        }
+                        return day;
+                        
+                    }
+                },
+                {
+                    field: "expressType",
+                    title: "快递公司",
+                    editable: {
+                        type: 'select',
+                        title: '快递公司',
+                        source:[
+                            	{value:"YUNDA",text:"韵达"},
+								{value:"ZHONGTONG",text:"中通"},
+								{value:"YUANTONG",text:"圆通"}
+								]
+                    }, 
+					align : 'center',
+                    width :  50,
+                    valign : 'middle'
+                },
+			{
+                field : 'goodStatus',
+                title : '状态',
+                align : 'center',
+                width :  50,
+                valign : 'middle',
+                formatter : function(value,row,index){
+					var day=row.goodStatus;
+                    switch (day)
+                    {
+                        case 0:
+                            return "未发货";
+                            break;
+                        case 1:
+                            return "发货中";
+                            break;
+                        case 2:
+                            return "已完成";
+                            break;
+						default:
+							return "状态未知!";
+                    } 
+                }
+            },{
+                title : '操作',
+                field : 'customerGoodId',
+                align : 'center',
+                width :  80 ,
+                valign : 'middle',
+                formatter : function(value,row,index){
+                    var e = '<a href="javascript:void()" onclick="sendGood(\''+ row.customerGoodId + '\')">发货</a> ';
+                    var d = '<a href="javascript:void()" onclick="deleteCategory(\''+ row.customerGoodId +'\')">删除</a> ';
+                    return e+d;
+                }
+            }],
+            onEditableSave: function (field, row, oldValue, $el) {
+                $.ajax({
+                    type: "post",
+                    url: "/cms/buy/doUpdateExpress.do",
+                    data: row,
+                    dataType: 'JSON',
+                    success: function (data, status) {
+                        if (status == "success") {
+                            window.location.href = "cms-good-order-table.html?time=" + new Date();
+                        }
+                    },
+                    error: function () {
+                        alert('编辑失败');
+                    },
+                    complete: function () {
+
+                    }
+
+                });
+            },
+            onLoadSuccess: function(data){  //加载成功时执行  
+
+
+
+				
+                if (data.code == 9999)
+                    $.fn.modalAlert(data.msg, "error");
+                //$("#theTable th").css("text-align","center");  //设置表头内容居中
+            },
+            onLoadError: function(){  //加载失败时执行  
+                $.fn.modalAlert("加载数据失败", "error");
+            }
+        });
+    }
+
+    function goGoodAdd() {
+        window.location.href = "cms-good-category-add.html?time="+Date.parse(new Date());
+    }
+
+    /**
+	 * 发货
+     * @param id
+     */
+    function sendGood(id){
+		var data={};
+		data.customerGoodId=id;
+		//发货中....
+		data.goodStatus=1;
+        $.ajax({
+            type: "post",
+            url: "/cms/buy/doUpdateExpress.do",
+			data:data,
+            dataType: 'JSON',
+            success: function (data, status) {
+                if (status == "success") {
+                    window.location.href = "cms-good-order-table.html?time=" + new Date();
+                }
+            },
+            error: function () {
+                alert('编辑失败');
+            },
+            complete: function () {
+
+            }
+
+        });
+        
+    }
+
+    function deleteGood(obj) {
+        if (obj){
+            layer.confirm('确认要删除吗？', {icon: 3, title:'系统提示'}, function(index){
+                layer.close(index);
+                handleAjaxSimple("/good/deleteCmsGood.do?goodId="+obj, '', 2, function(data){
+                    if (data.code == 0){
+                        $.fn.modalAlert("删除成功！", "success");
+                        initTable();
+                    }else{
+                        $.fn.modalAlert(data.msg, "error");
+                    }
+                });
+            });
+        }else{
+            layer.confirm('确认要删除吗？', {icon: 3, title:'系统提示'}, function(index){
+                layer.close(index);
+                if ($("input[type='checkbox'][name='btSelectItem']:checked").length != 0){
+                    var ids = [];
+                    $("input[type='checkbox'][name='btSelectItem']:checked").each(function() {
+                        ids.push($(this).val());
+                    });
+                    handleAjaxSimple("/good/batchdeleteCmsGood.do?goodIds="+ids.join(','), '', 2, function(data){
+                        if (data.code == 0){
+                            $.fn.modalAlert("删除成功！", "success");
+                            initTable();
+                        }else{
+                            $.fn.modalAlert(data.msg, "error");
+                        }
+                    });
+                }else{
+                    $.fn.modalAlert("请选择要删除的项！", "warning");
+                }
+            });
+        }
+    }
+</script>
+</html>

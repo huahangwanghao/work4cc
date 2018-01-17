@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 2 | General Form Elements</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../content/ui/global/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link href="../../content/ui/global/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/skins/_all-skins.min.css">
+    <link href="../../content/min/css/supershopui.common.min.css" rel="stylesheet"/>
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body ng-app="myApp">
+<section class="content-header">
+    <h1>
+        <a href="#" onclick="goBack()"><<</a>评论修改
+        <small></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Forms</a></li>
+        <li class="active">评论修改</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- left column -->
+
+        <!-- right column -->
+        <div class="col-md-6">
+            <!-- Horizontal Form -->
+
+            <!-- general form elements disabled -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" ng-controller="myCtrl">
+                    <form role="form" id="goodForm">
+                        <input name="commentId" id="commentId" ng-model="good.commentId" hidden="hidden"/>
+                        <!-- text input -->
+                        <div class="form-group">
+                            <label>客户编号</label>
+                            <input id="customerId" type="text" ng-model="good.customerId" name="customerId" class="form-control" placeholder="商品名称 ...">
+                        </div>
+                        <div class="form-group">
+                            <label>商品编号</label>
+                            <input id="cmsGoodId" type="text" ng-model="good.cmsGoodId" name="cmsGoodId" class="form-control" placeholder="商品名称 ...">
+                        </div>
+                        <div class="form-group">
+                            <label>评论星级</label>
+                            <input readonly id="commentStart" type="text" ng-model="good.commentStart" name="commentStart" class="form-control" placeholder="商品名称 ...">
+                        </div>
+                       
+                        
+
+                        <!-- textarea -->
+                        <div class="form-group">
+                            <label>客户评论</label>
+                            <textarea readonly name="commentContent" id="commentContent" ng-model="good.commentContent" class="form-control" rows="3" placeholder="...."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>商家回复</label>
+                            <textarea name="commentContentAnswer" id="commentContentAnswer" ng-model="good.commentContentAnswer" class="form-control" rows="3" placeholder="...."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>客户追加评论</label>
+                            <textarea readonly name="commentContent1" id="commentContent1" ng-model="good.commentContent1" class="form-control" rows="3" placeholder="...."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>商家回复</label>
+                            <textarea name="commentContentAnswer1" id="commentContentAnswer1" ng-model="good.commentContentAnswer1" class="form-control" rows="3" placeholder="...."></textarea>
+                        </div>
+
+                        
+                    </form>
+                </div>
+                <div class="box-footer">
+                    <button type="button" class="btn btn-default">重置</button>
+                    <button type="button" onclick="updateGood()" class="btn btn-info pull-right">保存</button>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
+    </div>
+    <!-- /.row -->
+</section>
+<script src="../../content/ui/global/jQuery/jquery.min.js"></script>
+<script src="../../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../content/min/js/supershopui.common.js"></script>
+<script src="../../content/supermgr/Base/js/common.js"></script>
+<script src="../../scripts/angular.min.js"></script>
+<script>
+    var thisURL = document.URL;
+    var  getval =thisURL.split('?')[1];
+    var id= getval.split("=")[1];
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+        $http({
+            method: 'post',
+            url: "/cms/comment/getCmsGoodCommentById.do?commentId="+id
+        }).then(function successCallback(response) {
+            $scope.good = response.data.data;
+        }, function errorCallback(response) {
+            // 请求失败执行代码
+        });
+
+    });
+
+
+    $(function(){
+        //getGood(id);
+    });
+
+    function goBack () {
+        window.history.go(-1);
+    }
+    
+    function updateGood() {
+        $.ajax({
+            type : "post",
+            url : "/cms/comment/toUpdateCmsGoodComment.do",
+            data : $('#goodForm').serialize(),
+            contentType : "application/x-www-form-urlencoded",
+            async : false,
+            error : function() {
+                $.fn.modalAlert("请求失败！", "error");
+            },
+            success : function(json) {
+                var result=JSON.parse(json);
+                $.fn.modalAlert(result.msg, "success");
+                window.location.href = "cms-good-comment-table.html";
+            }
+        });
+    }
+</script>
+</body>
+</html>

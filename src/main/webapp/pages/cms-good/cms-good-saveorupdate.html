@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>商品修改</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../content/ui/global/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link href="../../content/ui/global/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../content/min/css/supershopui.common.min.css" />
+    <link rel="stylesheet" href="../../plugin/webuploader/webuploader.css" />
+    <link rel="stylesheet" href="../../plugin/webuploader/style.css" />
+    <link rel="stylesheet" href="../../plugin/zTree/css/zTreeStyle/zTreeStyle.css" />
+    <link rel="stylesheet" href="../../content/plugins/validator/validator.css" />
+    
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head> 
+<body ng-app="myApp" ng-controller="myCtrl">
+    <section class="content-header">
+        <h1>
+           <a href="#" onclick="goBack()"><<</a><span ng-bind="page_title"></span>
+        </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <!-- right column -->
+            <div class="col-md-9">
+                <!-- Horizontal Form -->
+                <!-- general form elements disabled -->
+                <div class="box box-primary">
+                    <!-- /.box-header -->
+                    <form class="form-horizontal" id="goodForm">
+                    	<div class="box-body">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label for="goodName" class="col-sm-2 control-label">商品名称<span class="required">*</span></label>
+                                <div class="col-sm-4">
+                                	<input type="text" id="goodName" name="goodName" class="form-control" placeholder="商品名称 ..." 
+                                	errormsg="商品名称" isvalid="yes" checkexpession="NotNull" ng-value="good.goodName" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                            	<label for="good_category_name" class="col-sm-2 control-label">商品分类<span class="required">*</span></label>
+                            	<div class="col-sm-4">
+                            		<input type="text" class="form-control" id="good_category_name" placeholder="点击选择商品分类" name="good_level" 
+	                            		readonly data-toggle="modal" data-target="#good_category_modal" 
+	                            		errormsg="商品分类" isvalid="yes" checkexpession="NotNull" ng-value="good.categoryName" />
+                            		<input type="hidden" id="category_id" name="category_id" ng-value="category_id" />
+                            	</div>
+							</div>
+							<div class="form-group">
+                                <label for="goodSpeci" class="col-sm-2 control-label">商品规格<span class="required">*</span></label>
+                                <div class="col-sm-4">
+                            		<input type="text" class="form-control" id="goodSpeci" name="goodSpeci" placeholder="点击配置商品规格" 
+	                            		readonly data-toggle="modal" onclick="showGoodSpeci(this);"
+	                            		errormsg="商品规格" isvalid="yes" checkexpession="NotNull" />
+                            	</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="hasCount" class="col-sm-2 control-label">库存数量<span class="required">*</span></label>
+                                <div class="col-sm-4">
+                                	<input id="hasCount" name="hasCount" type="text" class="form-control" 
+                                		placeholder="库存数量 ..." errormsg="库存数量" isvalid="yes" checkexpession="NotNull" ng-value="good.hasCount" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodOriginalPrice" class="col-sm-2 control-label">商品原价<span class="required">*</span></label>
+                                <div class="col-sm-4">
+                                	<input id="goodOriginalPrice" name="goodOriginalPrice" type="text" class="form-control" 
+                                		placeholder="商品原价 ..." errormsg="商品原价" isvalid="yes" checkexpession="Num" ng-value="good.goodOriginalPrice" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodPromotionPrice" class="col-sm-2 control-label">商品促销价<span class="required">*</span></label>
+                                <div class="col-sm-4">
+                                	<input id="goodPromotionPrice" name="goodPromotionPrice" type="text" class="form-control" placeholder="商品促销价 ..." 
+                                		errormsg="商品促销价" isvalid="yes" checkexpession="Num" ng-value="good.goodPromotionPrice" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goodDesc" class="col-sm-2 control-label">商品描述</label>
+                                <div class="col-sm-9">
+                                	<textarea id="goodDesc" name="goodDesc" class="form-control" 
+                                		rows="3" placeholder="商品描述...." ng-value="good.goodDesc"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ueditor_container" class="col-sm-2 control-label">商品详情</label>
+                                <div class="col-sm-9">
+                                	<script id="ueditor_container"  type="text/plain"></script>
+                                </div>
+                                <input type="hidden" id="goodDetail" name="goodDetail" />
+                            </div>
+                            <div class="form-group">
+                            	<label class="col-sm-2 control-label">商品图片<span class="required">*</span></label>
+                            	<div class="col-sm-9">
+                            		<div id="wrapper">
+		                                <div id="container">
+		                                    <!--头部，相册选择和格式选择-->
+		                                    <div id="uploader">
+		                                        <div class="queueList">
+		                                            <div id="dndArea" class="placeholder">
+		                                                <div id="filePicker"></div>
+		                                                <p>单次最多可选300张</p>
+		                                            </div>
+		                                        </div>
+		                                        <div class="statusBar" style="display:none;">
+		                                            <div class="progress">
+		                                                <span class="text">0%</span>
+		                                                <span class="percentage"></span>
+		                                            </div><div class="info"></div>
+		                                            <div class="btns">
+		                                                <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+		                                            </div>
+		                                        </div>
+		                                    </div>
+		                                </div>
+		                            </div>
+                            	</div>
+                            	<input type="hidden" name="goodImage" id="goodImage" />
+                            	<input type="hidden" id="upload_filefolder" value="good" />
+                            </div>
+                    	</div>
+                    	<div class="box-footer">
+                    		<div class="col-md-offset-2">
+                    			<input type="reset" class="btn btn-primary" onclick="javascript:window.location.reload();" value="重置" />
+	                        	<button type="button" onclick="saveGood()" class="btn btn-primary">保存</button>
+                    		</div>
+	                    </div>
+                    </form>
+                    <!-- /.box-body -->
+                </div>
+                <!-- 商品分类 -->
+                <div id="good_category_modal" class="modal fade" tabindex="-1" data-width="400">
+                	<div class="modal-dialog">
+                       <div class="modal-content">
+                          <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                             <h4 class="modal-title">商品分类</h4>
+                          </div>
+                          <div class="modal-body">
+                             <div class="row">
+                                <div class="col-md-12">
+                                	<ul id="good_category_ztree" class="ztree"></ul>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                <!-- 商品规格 -->
+                <div id="good_speci_modal" class="modal fade" tabindex="-1" data-width="400">
+                	<div class="modal-dialog">
+                       <div class="modal-content">
+                          <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                             <h4 class="modal-title">商品规格</h4>
+                          </div>
+                          <div class="modal-body">
+                             <div class="row">
+                                <div class="col-md-12">
+                                	<ul id="good_speci_ztree" class="ztree"></ul>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+    
+    <script src="../../content/ui/global/jQuery/jquery.min.js"></script>
+    <script src="../../content/plugins/validator/validator.js"></script>
+    <script src="../../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../content/min/js/supershopui.common.js"></script>
+    <script src="../../content/supermgr/Base/js/common.js"></script>
+    <script src="../../scripts/angular.min.js"></script>
+    <script src="../../scripts/ajax.js"></script>
+    <script src="../../scripts/common.js"></script>
+	<script src="../../plugin/ueditor/ueditor.config.js"></script>
+    <script src="../../plugin/ueditor/ueditor.all.js"></script>
+    <script src="../../plugin/zTree/js/jquery.ztree.core-3.5.js"></script>
+    <script src="../../plugin/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+    <script src="../../plugin/webuploader/webuploader.js"></script>
+    <script>
+    	var ue = UE.getEditor('ueditor_container');
+    	var app = angular.module('myApp', []);
+    	var id = getUrlParam("id");
+    	if (id){
+    		//修改
+    		$('#goodForm').append('<input type="hidden" name="goodId" value="'+id+'" />');//添加商品id隐藏域
+    		//angularjs动态绑定数据
+    	    app.controller('myCtrl', function($scope, $http) {
+    	    	$scope.page_title= "商品修改";
+    	        $http({
+    	            method: 'get',
+    	            url: "/cms/good/getCmsGoodById.do?goodId="+id
+    	        }).then(function successCallback(response) {
+    	        	var gooddata = response.data.data;
+    	        	if (gooddata !=undefined){
+    	        		imgs = gooddata.goodImage;
+    	        		$scope.good = gooddata;
+    		            ue.ready(function() {
+    		            	ue.setContent(gooddata.goodDetail);
+    		            });
+    	        	}
+    	    	    $.getScript("../../plugin/webuploader/upload.js");
+    	        }, function errorCallback(response) {
+    	        	$.getScript("../../plugin/webuploader/upload.js");
+    	        	$.fn.modalAlert("请求失败！", "error");
+    	        });
+    	    });
+    	}else{
+    		//新增
+    		app.controller('myCtrl', function($scope, $http) {
+    			$scope.page_title= "商品新增";
+    		});
+    		$.getScript("../../plugin/webuploader/upload.js");
+    	}
+    	
+    	var setting = {
+   			data: {
+   				simpleData: {
+   					enable: true
+   				}
+   			},
+   			callback: {
+   				onClick: onClick
+   			}
+   		};
+    	
+    	$(function(){
+    		//查询商品分类
+    		handleAjaxSimple("/cms/category/getGoodCategoryTree.do", '', 1, function(treedata){
+    			$.fn.zTree.init($("#good_category_ztree"), setting, treedata.data);
+    		});
+    	});
+    	
+    	function onClick(event, treeId, treeNode) {
+    		if (!treeNode.isParent){
+    			$("#good_category_name").val(treeNode.name);
+    			$("#category_id").val(treeNode.id);
+    			$('#good_category_modal').modal('hide');
+    			//删除非空错误提示信息
+    			removeMessage($("#good_category_name"));
+    		}
+		}
+    	
+        function saveGood() {
+        	if ($('#goodForm').Validform()){
+        		var imgs = [];
+        		$("div[name='webuploader_file']").each(function(i){
+            		var jsondata = JSON.stringify($(this).children().serializeJsonObject());
+            		imgs.push(jsondata);
+            	});
+        		if (imgs.length == 0){
+        			$.fn.modalAlert("商品图片不能为空！", "error");
+            		return;
+        		}
+        		var imgsJson = "[" + imgs.join(',') + "]";
+                $("#goodImage").val(imgsJson);
+                var ueHtml = ue.getContent();
+                $("#goodDetail").val(ueHtml);
+                handleAjaxSimple("/cms/good/saveCmsGood.do", $('#goodForm').serialize(), 2, function(data){
+                	if (data.code == 0){
+                		$.fn.modalAlert("保存成功！", "success");
+                		window.location.href = "cms-good-table.html";
+                	}else{
+                		$.fn.modalAlert(data.msg, "error");
+                	}
+                });
+        	}
+        }
+        
+        //商品规格树
+        var good_speci_setting = {
+			check: {
+				enable: true,
+				chkboxType: {"Y":"", "N":""}
+			},
+			view: {
+				dblClickExpand: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick: beforeClick,
+				onCheck: onCheck
+			}
+		};
+        
+        function beforeClick(treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("good_speci_ztree");
+			zTree.checkNode(treeNode, !treeNode.checked, null, true);
+			return false;
+		}
+		
+		function onCheck(e, treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("good_speci_ztree");
+			nodes = zTree.getCheckedNodes(true);
+		}
+        
+        //根据商品分类查询商品规格参数
+        function showGoodSpeci(e){
+        	var category_id = $("#category_id").val();//商品分类id
+        	if (category_id == ''){
+        		$.fn.modalAlert("请先选择商品分类！", "error");
+        		return false;
+        	}
+        	$(e).attr("data-target","#good_speci_modal");
+        	handleAjaxSimple("/cms/category/getGoodCategoryTagTree.do?categoryId="+category_id, '', 1, function(treedata){
+    			$.fn.zTree.init($("#good_speci_ztree"), good_speci_setting, treedata.data);
+    		});
+        }
+        
+    </script>
+</body>
+</html>

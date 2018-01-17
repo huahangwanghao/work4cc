@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/rabbit
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+    <!--配置connection-factory，指定连接rabbit server参数 -->
+    <rabbit:connection-factory id="connectionFactory"
+                               username="smxxx" password="test@good.com" host="127.0.0.1" port="5672" virtual-host="prd" />
+
+    <!--定义rabbit template用于数据的接收和发送 -->
+    <rabbit:template id="amqpTemplate1"  connection-factory="connectionFactory"
+                     exchange="exchangeTest1" />
+     <rabbit:template id="amqpTemplate2"  connection-factory="connectionFactory"
+                     exchange="exchangeTest2" />
+
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <!--定义queue -->
+    <rabbit:queue name="fen.sa.refund.queue" durable="true" auto-delete="false" exclusive="false" />
+    <rabbit:queue name="fen.sa.sale.queue" durable="true" auto-delete="false" exclusive="false" />
+
+    <!-- 定义direct exchange，绑定queueTest 后面这个key和生产者的名字一样 -->
+    <rabbit:direct-exchange name="exchangeTest1" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="fen.sa.refund.queue" key="commissionQueue1"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+     <rabbit:direct-exchange name="exchangeTest2" durable="true" auto-delete="false">
+        <rabbit:bindings>
+             <rabbit:binding queue="fen.sa.sale.queue" key="commissionQueue2"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!-- 消息接收者 -->
+    <bean id="messageReceiver" class="com.wanghao.service.MessageConsumer"></bean>
+
+    <!-- queue litener  观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象-->
+    <!-- <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener queues="com.gomefinance.fen.sa.commissionQueue" ref="messageReceiver"/>
+    </rabbit:listener-container> -->
+
+</beans>

@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <title>cms</title>
+    <meta name="keywords" content="cms" />
+    <meta name="description" content="cms" />
+    <link href="content/ui/css/layout.css" rel="stylesheet" />
+    <link href="content/ui/css/login.css" rel="stylesheet" />
+    <link href="content/supermgr/Base/css/common.css" rel="stylesheet" />
+    
+    <style>
+        .ibar {
+            display: none;
+        }
+        
+        .login-error{
+        	width:320px;
+        	margin:0 auto;
+        	color: red;
+        }
+    </style>
+    
+</head>
+
+<body class="login-bg" onkeydown="keyLogin();">
+    <div class="main ">
+        <!--登录-->
+        <div class="login-dom login-max">
+            <div class="logo text-center">
+                <a href="#">
+                    <img src="content/ui/img/logo.png" width="180px" height="180px" />
+                </a>
+            </div>
+            <div class="login container " id="login">
+                <!-- <form class="login-form" action="/admin/index_iframe.html" method="get" autocomplete="off"> -->
+                <form class="login-form">
+                    <div class="login-box border text-small" id="box">
+                        <div class="name border-bottom">
+                            <input type="text" placeholder="登录账号" id="username" name="username" errormsg="登录账号" isvalid="yes" checkexpession="NotNull" datatype="*" />
+                        </div>
+                        <div class="pwd">
+                            <input type="password" placeholder="登录密码" id="password" name="password" errormsg="登录密码" isvalid="yes" checkexpession="NotNull" datatype="*" />
+                        </div>
+                    </div>
+                    <div id="login-error" class="login-error">
+                    
+                    </div>
+                    <input id="loginBtn" type="button" class="btn text-center login-btn" onclick="login();" value="立即登录" />
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="/content/ui/global/jQuery/jquery.min.js"></script>
+<script src="/content/plugins/validator/validator.js"></script>
+<script src="/content/supermgr/Base/js/common.js"></script>
+<script src="/scripts/ajax.js"></script>
+<script src="/scripts/md5.js"></script>
+<script src="/scripts/contants.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("input[name=username]").focus();
+	});
+    function SetCookie(cookieName,cookieValue,nDays) {
+        /*当前日期*/
+        var today = new Date();
+        /*Cookie过期时间*/
+        var expire = new Date();
+        /*如果未设置nDays参数或者nDays为0，取默认值1*/
+        if(nDays == null || nDays == 0) nDays = 1;
+        /*计算Cookie过期时间*/
+        expire.setTime(today.getTime() + 3600000 * 24 * nDays);
+        /*设置Cookie值*/
+        document.cookie = cookieName + "=" + escape(cookieValue)
+            + ";expires=" + expire.toGMTString();
+    }
+    function login(){
+        var username=$("#username").val();
+    	if ($('.login-form').Validform()){
+    		var jsonData = {
+   				loginid : $("#username").val(),
+   				pwd : hex_md5($("#password").val())
+   			};
+   			var url = "sys/login.do";
+   			handleAjaxSimple(url, JSON.stringify(jsonData), 1, function(data){
+   				if (data.code == 0){
+   		    		window.location.href = "/admin/index_iframe.html?name="+$("#username").val();
+                    SetCookie("username",username,7);
+   		    	}else{
+   		    		$("#login-error").html(data.restr)
+   		    	}
+   			});
+    	}
+    }
+    
+    function keyLogin(e){
+        if (event.keyCode == 13)  //回车键的键值为13
+            document.getElementById("loginBtn").click();
+        return;
+    }
+    
+</script>
+</html>

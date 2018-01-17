@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>规格新增</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../content/ui/global/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link href="../../content/ui/global/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="../../content/adminlte/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../content/min/css/supershopui.common.min.css" />
+    <link rel="stylesheet" href="../../plugin/zTree/css/zTreeStyle/zTreeStyle.css" />
+    <link rel="stylesheet" href="../../content/plugins/validator/validator.css" />
+    
+    <style type="text/css">
+		div#rMenu {
+			position:absolute;
+			visibility:hidden;
+			top:0;
+			background-color: #555;
+			text-align: left;
+			padding: 2px;
+			width:90px;
+		}
+		div#rMenu ul li{
+			left:0;
+			width:86px;
+			margin: 1px 0;
+			padding: 0 5px;
+			cursor: pointer;
+			list-style: none outside none;
+			background-color: #DFDFDF;
+		}
+		div#rMenu ul, li{
+			margin: 0;padding: 0;
+		}
+    </style>
+    
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head> 
+<body>
+    <section class="content-header">
+		<h1>规格管理</h1>
+	</section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+        	<div class="col-md-3">
+        		<ul id="ztree" class="ztree"></ul>
+        	</div>
+            <!-- left column -->
+            <!-- right column -->
+            <div class="col-md-9">
+                <!-- Horizontal Form -->
+                <!-- general form elements disabled -->
+                <div class="portlet-body form">
+                    <!-- /.box-header -->
+                    <form class="form-horizontal" id="tagForm">
+                    	<!-- text input -->
+                        <div class="form-group">
+                            <label for="tagName" class="col-sm-2 control-label">规格名称<span class="required">*</span></label>
+                            <div class="col-sm-4">
+                            	<input type="text" id="tagName" name="tagName" class="form-control" placeholder="规格名称 ..." 
+                            	errormsg="规格名称" isvalid="yes" checkexpession="NotNull" />
+                            </div> 
+                        </div>
+                    	<div class="box-footer">
+                    		<div class="col-md-offset-2">
+	                        	<button type="button" onclick="saveTag();" class="btn btn-primary">保存</button>
+                    		</div>
+	                    </div>
+	                    <input type="hidden" name="tagId" id="tagId" />
+	                    <input type="hidden" name="tagParentId" id="tagParentId" />
+	                    <input type="hidden" name="tagLevel" id="tagLevel" />
+                    </form>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <div id="rMenu">
+    	<ul>
+    		<li id="m_add" onclick="addTagTreeNode();">增加</li>
+    		<li id="m_del" onclick="editTagTreeNode();">修改</li>
+			<li id="m_del" onclick="deleteTagTreeNode();">删除</li>
+		</ul>
+	</div>
+    
+    <script src="../../content/ui/global/jQuery/jquery.min.js"></script>
+    <script src="../../content/plugins/validator/validator.js"></script>
+    <script src="../../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../content/min/js/supershopui.common.js"></script>
+    <script src="../../content/supermgr/Base/js/common.js"></script>
+    <script src="../../scripts/angular.min.js"></script>
+    <script src="../../scripts/ajax.js"></script>
+    <script src="../../plugin/zTree/js/jquery.ztree.core-3.5.js"></script>
+    <script src="../../plugin/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+    <script>
+    	var setting = {
+   			data: {
+   				simpleData: {
+   					enable: true
+   				}
+   			},
+   			callback: {
+   				onRightClick: onRightClick
+   			}
+   		};
+    	
+    	var zTree, rMenu;
+    	$(function(){
+    		rMenu = $("#rMenu");
+    		//查询商品分类
+    		handleAjaxSimple("/cms/tag/getCmsTags.do", '', 1, function(treedata){
+    			$.fn.zTree.init($("#ztree"), setting, treedata.data);
+    			zTree = $.fn.zTree.getZTreeObj("ztree");
+    		});
+    	});
+    	
+    	//修改规格
+    	function editTagTreeNode() {
+    		hideRMenu();
+    		var nodes = zTree.getSelectedNodes();
+			if (nodes && nodes.length>0) {
+				$("#tagName").val(nodes[0].name);
+				$("#tagId").val(nodes[0].id);
+			}
+		}
+    	
+    	//新增规格
+    	function addTagTreeNode(){
+    		hideRMenu();
+    		$("#tagName").val("");
+    		$("#tagId").val("");
+    		var nodes = zTree.getSelectedNodes();
+			if (nodes && nodes.length>0) {
+				$("#tagParentId").val(nodes[0].id);
+				$("#tagLevel").val(nodes[0].treelevel);
+			}
+    	}
+    	
+    	function deleteTagTreeNode(){
+    		hideRMenu();
+    		var nodes = zTree.getSelectedNodes();
+			if (nodes && nodes.length>0) {
+				//判断商品类型和商品是否绑定过该规格，todo
+				if (nodes[0].children && nodes[0].children.length > 0) {
+					var msg = "要删除的节点是父节点，如果删除将连同子节点一起删掉。\n\n请确认！";
+					if (confirm(msg)==true){
+						zTree.removeNode(nodes[0]);
+					}
+				} else {
+					zTree.removeNode(nodes[0]);
+				}
+			}
+    	}
+    	
+    	function onRightClick(event, treeId, treeNode) {
+			if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+				zTree.cancelSelectedNode();
+				showRMenu("root", event.clientX, event.clientY);
+			} else if (treeNode && !treeNode.noR) {
+				zTree.selectNode(treeNode);
+				showRMenu("node", event.clientX, event.clientY);
+			}
+		}
+    	
+    	function showRMenu(type, x, y) {
+			$("#rMenu ul").show();
+            y += document.body.scrollTop;
+            x += document.body.scrollLeft;
+            rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+			$("body").bind("mousedown", onBodyMouseDown);
+		}
+		function hideRMenu() {
+			if (rMenu) rMenu.css({"visibility": "hidden"});
+			$("body").unbind("mousedown", onBodyMouseDown);
+		}
+		function onBodyMouseDown(event){
+			if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+				rMenu.css({"visibility" : "hidden"});
+			}
+		}
+    	
+        function saveTag() {
+        	if ($('#tagForm').Validform()){
+        		var tagId = $("#tagId").val();
+				var tagParentId = $("#tagParentId").val();
+        		if (tagId =='' && tagParentId ==''){
+        			$.fn.modalAlert("请右击商品规格树选择增加或修改！", "error");
+        			return;
+        		}
+                handleAjaxSimple("/cms/tag/saveCmsTag.do", $('#tagForm').serialize(), 2, function(data){
+                	if (data.code == 0){
+                		$.fn.modalAlert("保存成功！", "success");
+                		window.location.href = "cms-good-specification.html";
+                	}else{
+                		$.fn.modalAlert(data.msg, "error");
+                	}
+                });
+        	}
+        }
+    </script>
+</body>
+</html>
