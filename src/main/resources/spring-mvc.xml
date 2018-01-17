@@ -47,5 +47,13 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
-
+    <!--include 表明包含下面的controller注解-->
+    <context:component-scan base-package="com.wanghao">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+    
+    
 </beans>

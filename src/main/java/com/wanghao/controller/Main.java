@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,24 @@ import java.util.regex.Pattern;
  **/
 public class Main {
 
-   public  static void main(String args[]) {
-        try { // 防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw  
 
+
+    private static  void createFile(String path){
+        File file = new File(path);
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public  static void main(String args[]) {
+        try { // 防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw  
+            createFile("D://3.xlsx");
+           
                 /* 读入TXT文件 */
             String pathname = "D:\\1.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径  
             File filename = new File(pathname); // 要读取以上路径的input。txt文件  

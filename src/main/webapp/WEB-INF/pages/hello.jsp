@@ -12,7 +12,6 @@
   </head>
   
   <body>
-  	this is hello world.
-	${requestScope.p}
+  	您好,请您先登录,再操作.谢谢~
   </body>
 </html>

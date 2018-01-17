@@ -111,19 +111,33 @@ public class WorkController {
 		String osName=System.getProperty("os.name");
 		osName=osName.toUpperCase();
 		
+		if(userName==null){
+			return getMap("请先登录!");
+		}
+		if(request.getSession().getAttribute(userName)==null){
+			return getMap("请先登录!");
+		}
+		
+		if(file==null){
+			return getMap("请选择文件!");
+		}
+		if(file.getOriginalFilename().length()==0){
+			return getMap("请选择文件!");
+		}
 
 
 		long  startTime=System.currentTimeMillis();
 		System.out.println("fileName："+file.getOriginalFilename());
 		String path="D:/"+new Date().getTime()+file.getOriginalFilename();
 		String writePath="D://1.xlsx";
+		
 		if(osName.contains("WIN")){
 			//path="D:/"+new Date().getTime()+file.getOriginalFilename();
 		}else{
 			path="/tmp/"+new Date().getTime()+file.getOriginalFilename();
-			writePath="/tmp/1.xlsx";
+			writePath="/tmp/"+userName+"/1.xlsx";
 		}
-		
+		createFile(writePath);
 		File newFile=new File(path);
 		//通过CommonsMultipartFile的方法直接写文件（注意这个时候）
 		file.transferTo(newFile);
@@ -139,7 +153,7 @@ public class WorkController {
 		BufferedReader br2 = new BufferedReader(reader2); // 建立一个对象，它把文件内容转成计算机能读懂的语言  
 		String line2 = "";
 		line2 = br2.readLine();
-		System.out.println(line2);
+		//System.out.println(line2);
 		List<StudentInfo> list=new ArrayList<StudentInfo>();
 		while (line2 != null) {
 			line2 = br2.readLine();
@@ -299,7 +313,13 @@ public class WorkController {
 	 */
 	@RequestMapping("/download.do")
 	public String downloadFile(@RequestParam("fileName") String fileName,
-							   HttpServletRequest request, HttpServletResponse response) {
+							   HttpServletRequest request, HttpServletResponse response,String userName) {
+		if(userName==null){
+			return "hello";
+		}
+		if(request.getSession().getAttribute(userName)==null){
+			return "hello";
+		}
 		if (fileName != null) {
 			String realPath = request.getServletContext().getRealPath(
 					"WEB-INF/File/");
@@ -307,7 +327,7 @@ public class WorkController {
 			osName=osName.toUpperCase();
 			realPath="D://";
 			if(!osName.contains("WIN")){
-				realPath="/tmp/";
+				realPath="/tmp/"+userName+"/";
 			}
 			File file = new File(realPath, fileName);
 			if (file.exists()) {
@@ -352,4 +372,17 @@ public class WorkController {
 		return null;
 	}
 
+	
+	
+	private  void createFile(String path){
+		File file = new File(path);
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }
