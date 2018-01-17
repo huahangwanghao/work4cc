@@ -13,14 +13,10 @@
 
 <!--     <import resource="classpath*:rabbitMq.xml" /> -->
     <aop:aspectj-autoproxy proxy-target-class="true" />
-    <mvc:annotation-driven />
 
-    <!-- 扫描指定package下所有带有如@controller,@services,@resource,@ods并把所注释的注册为Spring Beans -->
-    <context:component-scan base-package="com.wanghao.controller" />
-    
    <!--  <bean id="systemLogAspect" class="com.wanghao.listener.SystemLogAspect"></bean> -->
     <bean id="myAspect" class="com.wanghao.listener.MyAspect"></bean>
-    
+
     <aop:config>
        <!--  定义切点 -->
         <aop:pointcut id="pointcutTarget"
@@ -45,20 +41,6 @@
              />
         </aop:aspect>
     </aop:config>
-
-
-
-    <bean name="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="defaultEncoding" value="UTF-8"></property>
-    </bean>
-
-
-
-
-
-
-
 
 
 

@@ -18,37 +18,11 @@
     <param-value>spring-oauth-server</param-value>
   </context-param>
 
-  <!--
-      字符编码Filter, 统一为UTF-8
-  -->
-  <!--Encoding filter-->
 
-
-
-  <!--
-      响应时启用GZIP压缩, 提高性能与网络传输
-  -->
-  <!--GzipFilter -->
-
-
-  <!--
-      Spring Security 拦截 Filter配置
-  -->
-
-
-
-  <!--
-      Sitemesh, 装饰器Filter
-  -->
-  <!-- sitemesh filter-->
-
-  <!--
-      配置Spring Context 加载配置文件
-  -->
   <!--contextConfigLocation -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:application.xml</param-value>
+    <param-value>classpath:spring-root.xml</param-value>
   </context-param>
   <context-param>
     <param-name>log4jConfigLocation</param-name>
@@ -94,7 +68,7 @@
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>
-                classpath:application.xml
+                classpath:spring-mvc.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
