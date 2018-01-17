@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +26,7 @@ import java.util.List;
  * @create 2018-01-15 12:22
  **/
 public class WriteExcel {
-
+    private static Logger logger = LoggerFactory.getLogger(WriteExcel.class);
     private static final String EXCEL_XLS = "xls";
     private static final String EXCEL_XLSX = "xlsx";
 
@@ -174,7 +176,7 @@ public class WriteExcel {
                 e.printStackTrace();
             }
         }
-        System.out.println("数据导出成功");
+        logger.info("数据导出成功");
     }
 
     /**

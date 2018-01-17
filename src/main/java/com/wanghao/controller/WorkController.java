@@ -1,6 +1,9 @@
 package com.wanghao.controller;
 
 import com.wanghao.utils.PropertyUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -141,13 +144,13 @@ public class WorkController {
 		long  startTime=System.currentTimeMillis();
 		System.out.println("fileName："+file.getOriginalFilename());
 		String path="D:/"+new Date().getTime()+file.getOriginalFilename();
-		String writePath="D://admin//1.xlsx";
+		String writePath="D://admin//1.xls";
 		
 		if(osName.contains("WIN")){
 			//path="D:/"+new Date().getTime()+file.getOriginalFilename();
 		}else{
 			path="/tmp/"+new Date().getTime()+file.getOriginalFilename();
-			writePath="/tmp/"+userName+"/1.xlsx";
+			writePath="/tmp/"+userName+"/1.xls";
 		}
 		logger.info("编写的位置:"+writePath);
 		createFile(writePath);
@@ -407,10 +410,37 @@ public class WorkController {
 
 
 	public static void testCreateFirstExcel07(String path) throws Exception {
-		Workbook wb = new XSSFWorkbook();
-		FileOutputStream fileOut = new FileOutputStream(path);
+		HSSFWorkbook wb = new HSSFWorkbook();
+		/*FileOutputStream fileOut = new FileOutputStream(path);
 		wb.write(fileOut);
-		fileOut.close();
+		wb.createSheet();
+		fileOut.close();*/
+
+		createExcel(wb,path,"sheet1");
+	}
+
+	public static void createExcel(HSSFWorkbook workbook,String fileDir,String sheetName) throws Exception{
+		//创建workbook
+		//workbook = new HSSFWorkbook();
+		//添加Worksheet（不添加sheet时生成的xls文件打开时会报错)
+		HSSFSheet sheet1 = workbook.createSheet(sheetName);
+		//新建文件
+		FileOutputStream out = null;
+		try {
+			//添加表头
+			HSSFRow row = workbook.getSheet(sheetName).createRow(0);    //创建第一行
+
+			out = new FileOutputStream(fileDir);
+			workbook.write(out);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
