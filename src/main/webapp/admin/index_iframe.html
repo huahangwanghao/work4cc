@@ -69,11 +69,11 @@ desired effect
             <span class="sr-only">切换导航</span>
         </a>
         <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#">平台 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">订单</a></li>
+            <ul style="display: none" class="nav navbar-nav">
+                <li><a href="#"><span class="sr-only">(current)</span></a></li>
+                <li><a href="#"></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">会员 <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="#">会员积分管理</a></li>
                         <li><a href="#">会员等级管理</a></li>
@@ -91,7 +91,7 @@ desired effect
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
                 <!-- Messages: style can be found in dropdown.less-->
-                <li class="dropdown messages-menu">
+                <li class="dropdown messages-menu" style="display: none;">
                     <!-- Menu toggle button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-envelope-o"></i>
@@ -127,7 +127,7 @@ desired effect
                 </li>
                 <!-- /.messages-menu -->
                 <!-- Notifications Menu -->
-                <li class="dropdown notifications-menu">
+                <li class="dropdown notifications-menu" style="display: none;">
                     <!-- Menu toggle button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-bell-o"></i>
@@ -151,7 +151,7 @@ desired effect
                     </ul>
                 </li>
                 <!-- Tasks Menu -->
-                <li class="dropdown tasks-menu">
+                <li class="dropdown tasks-menu" style="display: none;">
                     <!-- Menu Toggle Button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-flag-o"></i>
@@ -194,14 +194,14 @@ desired effect
                         <!-- The user image in the navbar-->
                         <img src="../content/ui/img/photos/girl1.png" class="user-image" alt="User Image">
                         <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                        <span class="hidden-xs">TZHSWEET</span>
+                        <span class="hidden-xs">ADMIN</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- The user image in the menu -->
                         <li class="user-header">
                             <img src="../content/ui/img/photos/girl1.png" class="img-circle" alt="User Image">
                             <p>
-                                TZHSWEET的小妞
+                                ADMIN的小妞
                                 <small>2016年注册</small>
                             </p>
                         </li>
@@ -223,10 +223,10 @@ desired effect
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">个人中心</a>
+                                <a href="#" class="btn btn-default btn-flat" onclick="updatePwd()">修改密码</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">退出</a>
+                                <a href="#" class="btn btn-default btn-flat" onclick="logout()">退出</a>
                             </div>
                         </li>
                     </ul>
@@ -249,7 +249,7 @@ desired effect
                 <img src="../content/ui/img/photos/girl1.png" class="img-circle" alt="用户头像">
             </div>
             <div class="pull-left info">
-                <p>TZHSWEET</p>
+                <p>ADMIN</p>
                 <!-- Status -->
                 <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
             </div>
@@ -316,7 +316,7 @@ desired effect
        SuperShop项目组
     </div>
     <!-- Default to the left -->
-    版权所有 &copy;tzhsweet 2015-2018&nbsp;&nbsp;&nbsp;&nbsp;   粤ICP备16024545号-1
+    版权所有 &copy;ADMIN 2015-2018&nbsp;&nbsp;&nbsp;&nbsp;   粤ICP备16024545号-1
 </footer>
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
@@ -496,9 +496,47 @@ immediately after the control sidebar -->
 <script src="../content/ui/global/bootstrap/js/bootstrap.min.js"></script>
     <script src="../content/min/js/supershopui.common.js"></script>
 <script src="../common.js"></script>
-
-
+<script src="../scripts/ajax.js"></script>
 <script type="text/javascript">
+
+    // 读取cookies
+    function getCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    function updatePwd(){
+       /* var username=getCookie("username");
+        var jsonData = {
+            loginid : username
+        };
+        var url = BASE_URL+"/sys/updatePwd.do";
+        handleAjaxSimple(url, JSON.stringify(jsonData), 1, function(data){
+            if (data.code == 0){
+                alert("修改成功");
+            }else{
+                $("#login-error").html(data.restr)
+            }
+        });*/
+    }
+
+    function logout(){
+        var username=getCookie("username");
+            var jsonData = {
+                loginid : username
+            };
+            var url = BASE_URL+"/sys/logout.do";
+            handleAjaxSimple(url, JSON.stringify(jsonData), 1, function(data){
+                if (data.code == 0){
+                    window.location.href = BASE_URL+"/login.html";
+                }else{
+                    $("#login-error").html(data.restr)
+                }
+            });
+        
+    }
 
     function GetQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
@@ -528,7 +566,7 @@ immediately after the control sidebar -->
         App.fixIframeCotent();
         var menus = [
              { id: "10010", text: "我的工作台", isHeader: true },
-              {
+              {/*
                   id: "10020",
                   isOpen: false,
                   text: "SuperShopUI",
@@ -541,12 +579,12 @@ immediately after the control sidebar -->
                           icon: "fa fa-circle-o",
                           children: [
                               { id: "10022", text: "上传和下载", url: "../component-extend/formfileupload.html", targetType: "blank", icon: "fa fa-spinner" }
-                             /* { id: "10023", text: "ajax加载", url: "../admin/index.html", targetType: "blank", icon: "fa fa-refresh" },
-                               { id: "10023", text: "原生页面加载", url: "../admin/index_page.html", targetType: "blank", icon: "fa fa-refresh" }*/
+                             /!* { id: "10023", text: "ajax加载", url: "../admin/index.html", targetType: "blank", icon: "fa fa-refresh" },
+                               { id: "10023", text: "原生页面加载", url: "../admin/index_page.html", targetType: "blank", icon: "fa fa-refresh" }*!/
 
                           ]
                       }
-                  ]
+                  ]*/
               },
              
               /*{

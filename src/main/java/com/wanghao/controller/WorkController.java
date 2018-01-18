@@ -4,7 +4,6 @@ import com.wanghao.utils.PropertyUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -60,7 +59,7 @@ public class WorkController {
 		
 		boolean loginsuccess = false;
 		logger.info("登录入参:"+req);
-		if(null!=pwd1){
+		if(null!=pwd1&&pwd.equals(pwd1)){
 			HttpSession session=request.getSession();
 			session.setMaxInactiveInterval(60*5);
 			session.setAttribute(req.getLoginid(),req.getLoginid());
@@ -69,8 +68,30 @@ public class WorkController {
 		
 		if (!loginsuccess) {
 			map.put("code", 1);
-			map.put("restr", "fail");
+			map.put("restr", "用户名/密码错误!");
 		}
+		return map;
+	}
+
+/*	@RequestMapping(value = "updatePwd.do")
+	@ResponseBody
+	public Object updatePwd(@RequestBody SysUser req, HttpServletRequest request) {
+		Map<String, Object> map = this.getMap("success");
+		logger.info("修改密码:"+req);
+		String userName=req.getLoginid();
+		String pwd=req.getPwd();
+		com.wanghao.Main.updateProperties(userName,pwd);
+		return map;
+	}*/
+
+	@RequestMapping(value = "logout.do")
+	@ResponseBody
+	public Object logout(@RequestBody SysUser req, HttpServletRequest request) {
+		Map<String, Object> map = this.getMap("success");
+		logger.info("退出登录:"+req);
+		String userName=req.getLoginid();
+		HttpSession session=request.getSession();
+		session.removeAttribute(userName);
 		return map;
 	}
 	

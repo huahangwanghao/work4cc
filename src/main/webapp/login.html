@@ -82,7 +82,8 @@
     	if ($('.login-form').Validform()){
     		var jsonData = {
    				loginid : $("#username").val(),
-   				pwd : hex_md5($("#password").val())
+   				//pwd : hex_md5($("#password").val())
+                pwd : $("#password").val()
    			};
    			var url = "sys/login.do";
    			handleAjaxSimple(url, JSON.stringify(jsonData), 1, function(data){
