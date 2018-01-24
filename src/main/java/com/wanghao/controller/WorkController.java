@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/sys")
 public class WorkController {
-	private Logger logger = LoggerFactory.getLogger(WorkController.class);
+	private static Logger logger = LoggerFactory.getLogger(WorkController.class);
 
 
 	@RequestMapping(value = "login.do")
@@ -195,6 +195,7 @@ public class WorkController {
 		List<StudentInfo> list=new ArrayList<StudentInfo>();
 		while (line2 != null) {
 			line2 = br2.readLine();
+			logger.info("内容:"+line2);
 			if(line2!=null&&line2.contains("客户姓名 ")){
 				continue;
 			}
@@ -215,6 +216,7 @@ public class WorkController {
 
 	private static StudentInfo getStudetInfo(String str1){
 		StudentInfo studentInfo=new StudentInfo();
+		try{
 		String [] s=str1.split(" ");
 		int i=0;
 		String name=s[0];
@@ -237,7 +239,7 @@ public class WorkController {
 		}
 		String jinJiLianxiRen=s[4];
 
-		if(jinJiLianxiRen.length()!=0&&!jinJiLianxiRen.startsWith("201")&&!isMobileNO(jinJiLianxiRen)){
+		if(jinJiLianxiRen.length()!=0&&!jinJiLianxiRen.startsWith("201")&&!isMobileNO(jinJiLianxiRen)&&!"无".equals(jinJiLianxiRen)){
 			if(isContainMobileNO(jinJiLianxiRen)){
 				//表名是  张三1817123123
 				studentInfo.setJinJiLianxiRen(jinJiLianxiRen);
@@ -316,7 +318,12 @@ public class WorkController {
 		String xuezhi=s[++i];
 		studentInfo.setXueZhi(xuezhi);
 		String shifouBaoHanXueWei=s[++i];
-		studentInfo.setShiFouBaoHanXueWei(shifouBaoHanXueWei);
+		studentInfo.setShiFouBaoHanXueWei(shifouBaoHanXueWei);}
+		catch (Exception e){
+			logger.info("异常的字符串是:"+str1);
+			logger.info("解析异常",e);
+		}
+			
 		return studentInfo;
 	}
 
@@ -327,6 +334,11 @@ public class WorkController {
 	}
 
 	public static boolean isEmail(String email) {
+		
+		if(email.contains("qq")||email.contains("com")||email.contains("@")){
+			return true;
+		}
+		
 		String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 		Pattern regex = Pattern.compile(check);
 		Matcher matcher = regex.matcher(email);

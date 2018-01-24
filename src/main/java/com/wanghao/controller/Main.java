@@ -40,10 +40,10 @@ public class Main {
 
     public  static void main(String args[]) {
         try { // 防止文件建立或读取失败，用catch捕捉错误并打印，也可以throw  
-            createFile("D://admin//3.xlsx");
+           /* createFile("D://admin//3.xlsx");
            if(true){
                return;
-           }
+           }*/
                 /* 读入TXT文件 */
             String pathname = "D:\\1.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径  
             File filename = new File(pathname); // 要读取以上路径的input。txt文件  
@@ -106,6 +106,7 @@ public class Main {
 
     private static StudentInfo getStudetInfo(String str1){
         StudentInfo studentInfo=new StudentInfo();
+        try{
         String [] s=str1.split(" ");
         int i=0;
         String name=s[0];
@@ -128,7 +129,7 @@ public class Main {
         }
         String jinJiLianxiRen=s[4];
 
-        if(jinJiLianxiRen.length()!=0&&!jinJiLianxiRen.startsWith("201")&&!isMobileNO(jinJiLianxiRen)){
+        if(jinJiLianxiRen.length()!=0&&!jinJiLianxiRen.startsWith("201")&&!isMobileNO(jinJiLianxiRen)&&!"无".equals(jinJiLianxiRen)){
             if(isContainMobileNO(jinJiLianxiRen)){
                 //表名是  张三1817123123
                 studentInfo.setJinJiLianxiRen(jinJiLianxiRen);
@@ -168,7 +169,7 @@ public class Main {
         }
 
         String email=s[++i];
-        if(isEmail(email)){
+        if(isEmail(email.trim())){
             studentInfo.setEmail(email);    
         }else{
             //如果不是email
@@ -207,7 +208,10 @@ public class Main {
         String xuezhi=s[++i];
         studentInfo.setXueZhi(xuezhi);
         String shifouBaoHanXueWei=s[++i];
-        studentInfo.setShiFouBaoHanXueWei(shifouBaoHanXueWei);
+        studentInfo.setShiFouBaoHanXueWei(shifouBaoHanXueWei);}
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return studentInfo;
     }
 
@@ -218,6 +222,11 @@ public class Main {
     }
 
     public static boolean isEmail(String email) {
+        
+        if(email.contains("@qq.com")||email.contains("@qqcom")){
+            return true;
+        }
+        
         String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(email);
