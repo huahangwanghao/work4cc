@@ -1,5 +1,6 @@
 package com.wanghao.controller;
 
+import com.wanghao.service.UserService;
 import com.wanghao.utils.PropertyUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -8,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,12 +48,14 @@ import java.util.regex.Pattern;
 public class WorkController {
 	private static Logger logger = LoggerFactory.getLogger(WorkController.class);
 
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping(value = "login.do")
 	@ResponseBody
 	public Object login(@RequestBody SysUser req, HttpServletRequest request) {
 		Map<String, Object> map = this.getMap("success");
-		
+		userService.test();
 		String userName=req.getLoginid();
 		String pwd=req.getPwd();
 		String pwd1=PropertyUtil.getPwd(userName);
@@ -89,6 +93,7 @@ public class WorkController {
 	public Object logout(@RequestBody SysUser req, HttpServletRequest request) {
 		Map<String, Object> map = this.getMap("success");
 		logger.info("退出登录:"+req);
+		userService.test();
 		String userName=req.getLoginid();
 		HttpSession session=request.getSession();
 		session.removeAttribute(userName);

@@ -15,7 +15,7 @@
     <mvc:annotation-driven />
 
     <!-- 扫描指定package下所有带有如@controller,@services,@resource,@ods并把所注释的注册为Spring Beans -->
-    <context:component-scan base-package="com.wanghao.controller" />
+  <!--  <context:component-scan base-package="com.wanghao.controller" />-->
     
     <!--不处理静态资源-->
     <mvc:default-servlet-handler />
