@@ -3,9 +3,8 @@ package com.wanghao.test.thread;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
 
 /** 
 * @author WH 作者 E-mail: 
@@ -40,10 +39,14 @@ public class ThreadLocalDemo1 {
     
     
     public static void main(String[] args) {
-       Executor executor=Executors.newFixedThreadPool(6);
+       /*Executor executor=Executors.newFixedThreadPool(6);
        for(int i=0;i<1000;i++){
            executor.execute(new ParseDate(i));
-       }
+       }*/
+       
+       Map<Object,Object> map=new HashMap<Object,Object>();
+       map.put(map,map);
+        System.out.println(map.get(map));
 
     }
 
